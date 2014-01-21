@@ -1,0 +1,82 @@
+#! /bin/bash
+
+# run - version 2.0
+# Yi Yin
+# 2011-10-14
+
+# run is a better version of runSuite (written for a1q4, FALL 2011 CS 246)
+# run stores outputs into temporary file. It can compare input and outputs
+# that go across multiple lines of text.
+
+
+###########################################################################
+#	Usage function, prints error message
+	usage ()	{
+			echo "Usage: $0 test suite" >&2
+			exit 1
+		}
+
+#	fileError function, checks whether a file exit and if it's readable
+
+	fileError ()	{
+			 echo "fileError: $0 file  does not exist or not readable" >&2
+			 exit 1 
+		}
+
+# if run does not work, then first, delete usage of error checks.
+###########################################################################
+
+
+
+
+
+# checks is the correct amount of command line arguments are given
+if [ $# -ne 2 ]; then
+        usage
+fi
+
+
+
+
+for name in `cat ${1}`; do
+	# sets the actual outcome into a temporary file
+	cat $name.in | $2 > actual.txt
+
+
+	
+	# stores the difference between expected and actual
+	# in a temporary file
+	diff  actual.txt ${name}.out  > difference.txt
+	if [ -s  difference.txt  ]; then
+	#	difference file is not empty
+        
+		echo "#################################################"
+		echo "#################################################"
+		echo " "
+		echo " "
+		echo " $name Test failed:"
+        	echo "Input:"
+        	cat ${name}.in
+       		echo "Expected:"
+        	cat ${name}.out
+        	echo "Actual:"
+       	 	cat actual.txt
+		
+		# remove temporary files
+		rm actual.txt
+		rm difference.txt
+        	continue
+	else
+        	# output textname passed and remove temporary files
+                echo "#################################################"
+                echo "#################################################"
+                echo " "
+                echo " "
+		echo "$name   - test passed!"
+		rm actual.txt
+		rm difference.txt
+		continue
+	fi
+
+done
+

@@ -1,0 +1,36 @@
+#! /bin/bash
+
+# Yi Yin
+# 2011-10
+# this script parases HTML. It also demonstrate pattern replacements.
+
+
+#       get the index.shtml file as well as the the muted output of wget
+wget -o mute.txt http://www.student.cs.uwaterloo.ca/~cs246/index.shtml
+
+#       removes the output from wget from directory
+rm mute.txt
+
+
+
+#       Default: print the first three announcements
+if [ $# -eq 0 ]; then
+        egrep '<li><b>' index.shtml | sed 's_<li>\(.*\)</li>_\1_' | sed 's_<b>\(.*\)</b>_\1_' | sed 's_:_:-_' | head -3
+
+
+#       -o: print k  old announcements
+elif [ ${1} = -o ]; then
+        egrep '<li><b>' index.shtml | sed 's_<li>\(.*\)</li>_\1_' | sed 's_<b>\(.*\)</b>_\1_' | sed 's_:_:-_' | tail -${2}
+
+#       Extra: print all announcements
+elif [ ${1} = -a ]; then
+        egrep '<li><b>' index.shtml | sed 's_<li>\(.*\)</li>_\1_' | sed 's_<b>\(.*\)</b>_\1_' | sed 's_:_:-_'
+
+#       -n: print k new announcements
+else
+        egrep '<li><b>' index.shtml | sed 's_<li>\(.*\)</li>_\1_' | sed 's_<b>\(.*\)</b>_\1_' | sed 's_:_:-_' | head -${2}
+fi
+
+
+#       remove index.shtml
+rm index.shtml
